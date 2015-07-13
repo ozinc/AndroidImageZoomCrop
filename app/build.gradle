@@ -35,8 +35,8 @@ android {
     }
 }
 
-archivesBaseName = 'client_android_imagecrop'
-group = 'com.oz.imagecrop'
+archivesBaseName = 'client_android_imagezoomcrop'
+group = 'com.oz.imagezoomcrop'
 version = '1.0.0'
 
 dependencies {
