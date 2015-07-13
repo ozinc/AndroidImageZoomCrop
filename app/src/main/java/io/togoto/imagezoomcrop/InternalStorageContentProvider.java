@@ -51,7 +51,7 @@ public class InternalStorageContentProvider extends ContentProvider {
 	
 	@Override
 	public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
-		File f = new File(getContext().getFilesDir(), ImageViewActivity.TEMP_PHOTO_FILE_NAME);
+		File f = new File(getContext().getFilesDir(), ImageCropActivity.TEMP_PHOTO_FILE_NAME);
 		if (f.exists()) {
 			return (ParcelFileDescriptor.open(f, ParcelFileDescriptor.MODE_READ_WRITE));
 		}

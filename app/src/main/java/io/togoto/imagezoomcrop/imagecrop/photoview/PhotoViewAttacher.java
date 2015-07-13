@@ -37,9 +37,9 @@ import android.widget.ImageView.ScaleType;
 
 import java.lang.ref.WeakReference;
 
+import android.widget.OverScroller;
+import io.togoto.imagezoomcrop.imagecrop.photoview.gestures.FroyoGestureDetector;
 import io.togoto.imagezoomcrop.imagecrop.photoview.gestures.OnGestureListener;
-import io.togoto.imagezoomcrop.imagecrop.photoview.gestures.VersionedGestureDetector;
-import io.togoto.imagezoomcrop.imagecrop.photoview.scrollerproxy.ScrollerProxy;
 
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
@@ -163,8 +163,8 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
             return;
         }
         // Create Gesture Detectors...
-        mScaleDragDetector = VersionedGestureDetector.newInstance(
-                imageView.getContext(), this);
+        mScaleDragDetector = new FroyoGestureDetector(imageView.getContext());
+        mScaleDragDetector.setOnGestureListener(this);
 
         mGestureDetector = new GestureDetector(imageView.getContext(),
                 new GestureDetector.SimpleOnGestureListener() {
@@ -1028,11 +1028,11 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
 
     private class FlingRunnable implements Runnable {
 
-        private final ScrollerProxy mScroller;
+        private final OverScroller mScroller;
         private int mCurrentX, mCurrentY;
 
         public FlingRunnable(Context context) {
-            mScroller = ScrollerProxy.getScroller(context);
+            mScroller = new OverScroller(context);
         }
 
         public void cancelFling() {

@@ -46,10 +46,10 @@ public class ImageCropActivity extends Activity {
     public static final String TAG = "ImageCropActivity";
     PhotoView mImageView;
     CropOverlayView mCropOverlayView;
-    Button btnRetakePic;
-    Button btnFromGallery;
+    //Button btnRetakePic;
+    //Button btnFromGallery;
     Button btnDone;
-    View mMoveResizeText;
+    //View mMoveResizeText;
 
 
     private ContentResolver mContentResolver;
@@ -80,13 +80,13 @@ public class ImageCropActivity extends Activity {
         mContentResolver = getContentResolver();
         mImageView = (PhotoView) findViewById(R.id.iv_photo);
         mCropOverlayView = (CropOverlayView)findViewById(R.id.crop_overlay);
-        btnRetakePic = (Button) findViewById(R.id.btnRetakePic);
-        btnFromGallery = (Button) findViewById(R.id.btnFromGallery);
+        //btnRetakePic = (Button) findViewById(R.id.btnRetakePic);
+        //btnFromGallery = (Button) findViewById(R.id.btnFromGallery);
         btnDone = (Button) findViewById(R.id.btn_done);
-        mMoveResizeText = findViewById(R.id.tv_move_resize_txt);
+        //mMoveResizeText = findViewById(R.id.tv_move_resize_txt);
 
-        btnRetakePic.setOnClickListener(btnRetakeListener);
-        btnFromGallery.setOnClickListener(btnFromGalleryListener);
+        //btnRetakePic.setOnClickListener(btnRetakeListener);
+        //btnFromGallery.setOnClickListener(btnFromGalleryListener);
         btnDone.setOnClickListener(btnDoneListerner);
 
         mImageView.addListener(new PhotoViewAttacher.IGetImageBounds() {
@@ -146,9 +146,9 @@ public class ImageCropActivity extends Activity {
         mImageView.setScale(minScale);
 
         //Initialize the MoveResize text
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mMoveResizeText.getLayoutParams();
+        /*RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mMoveResizeText.getLayoutParams();
         lp.setMargins(0, Math.round(Edge.BOTTOM.getCoordinate()) + 20, 0, 0);
-        mMoveResizeText.setLayoutParams(lp);
+        mMoveResizeText.setLayoutParams(lp);*/
 
     }
 
@@ -171,26 +171,6 @@ public class ImageCropActivity extends Activity {
             Toast.makeText(this,"Unable to save Image into your device.",Toast.LENGTH_LONG).show();
         }
     }
-
-    private View.OnClickListener btnRetakeListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (null == mFileTemp) {
-                createTempFile();
-            }
-            takePic();
-        }
-    };
-
-    private View.OnClickListener btnFromGalleryListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (null == mFileTemp) {
-                createTempFile();
-            }
-            pickImage();
-        }
-    };
 
 
     private void createTempFile() {

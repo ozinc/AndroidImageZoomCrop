@@ -1,11 +1,10 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "io.togoto.imagezoomcrop"
         minSdkVersion 14
         targetSdkVersion 22
         versionCode 1
@@ -17,7 +16,28 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    repositories {
+        mavenCentral()
+        flatDir {
+            dirs 'libs'
+        }
+    }
+    libraryVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            def extension = ''
+            if (outputFile != null && outputFile.name.endsWith('debug.aar')) {
+                extension = '-debug'
+            }
+            def fileName = "${archivesBaseName}-${version}${extension}.aar"
+            output.outputFile = new File(outputFile.parent, fileName)
+        }
+    }
 }
+
+archivesBaseName = 'client_android_imagecrop'
+group = 'com.oz.imagecrop'
+version = '1.0.0'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
