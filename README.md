@@ -1,5 +1,8 @@
-IOS, IPhone style photo cropping tool. Similar to Facebook profile image selection on Android, move, scale and crop.
+# AndroidImageZoomCrop
+Android view library for crop images like in Twitter, Facebook and Instagram
+Should be good for cropping profile photos
 
-Have option to select image from Gallery or Camera. Zoom in,out to crop an image. Uses modified version of Photoview and Stripped down version of Cropper library.
+## Credits
+This library is just a minor modification of [AndroidImageZoomCrop](https://github.com/ozeetee/AndroidImageZoomCrop)
 
-[Sample APK FILE!](https://github.com/ozeetee/AndroidImageZoomCrop/releases/download/1.0/AndroidImageZoomCrop.apk)
+
