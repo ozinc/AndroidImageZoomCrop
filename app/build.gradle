@@ -29,7 +29,11 @@ android {
 
     libraryVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "${archivesBaseName}-${android.defaultConfig.versionName}-${variant.name}.aar"
+            if (variant.name == "debug") {
+                outputFileName = "${archivesBaseName}-${android.defaultConfig.versionName}-${variant.name}.aar"
+            } else {
+                outputFileName = "${archivesBaseName}-${android.defaultConfig.versionName}.aar"
+            }
         }
     }
 }
