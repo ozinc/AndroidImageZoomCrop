@@ -17,7 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -45,7 +45,7 @@ import com.oz.imagezoomcrop.imagecrop.photoview.PhotoViewAttacher;
 /**
  * @author GT
  */
-public class ImageCropActivity extends ActionBarActivity
+public class ImageCropActivity extends AppCompatActivity
 {
 
   public static final String TAG = "ImageCropActivity";
