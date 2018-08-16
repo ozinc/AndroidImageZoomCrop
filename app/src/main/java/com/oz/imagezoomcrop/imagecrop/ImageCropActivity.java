@@ -357,9 +357,6 @@ public class ImageCropActivity extends AppCompatActivity
         {
           InputStream inputStream = getContentResolver().openInputStream(result.getData()); // Got the bitmap .. Copy it to the temp file for cropping
           FileOutputStream fileOutputStream = new FileOutputStream(mFileTemp);
-          // FIXME
-          // 08-08 16:57:47.499 31697-31697/com.oz.eon.d E/ImageZoomCrop: /storage/emulated/0/temp_photo.jpg (Permission denied)
-          // java.io.FileNotFoundException: /storage/emulated/0/temp_photo.jpg (Permission denied)
           copyStream(inputStream, fileOutputStream);
           fileOutputStream.close();
           inputStream.close();
