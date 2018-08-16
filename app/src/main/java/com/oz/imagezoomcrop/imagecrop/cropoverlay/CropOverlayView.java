@@ -88,6 +88,7 @@ public class CropOverlayView extends View implements PhotoViewAttacher.IGetImage
     clipPath.addCircle(radius, radius, cropHeight / 2, Path.Direction.CW);
     canvas.clipPath(clipPath, Region.Op.DIFFERENCE);
     canvas.drawARGB(204, 0, 0, 0);
+    canvas.save();
     canvas.restore();
     canvas.drawCircle(radius, radius, cropHeight / 2, mBorderPaint);
     //canvas.drawRoundRect(rectF, radius, radius, mBorderPaint);

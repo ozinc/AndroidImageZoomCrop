@@ -1,9 +1,11 @@
 package com.oz.imagezoomcrop.imagecrop;
 
-import android.app.Activity;
+import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -13,10 +15,14 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -35,6 +41,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.oz.imagezoomcrop.BuildConfig;
 import com.oz.imagezoomcrop.R;
 import com.oz.imagezoomcrop.imagecrop.cropoverlay.CropOverlayView;
 import com.oz.imagezoomcrop.imagecrop.cropoverlay.edge.Edge;
@@ -58,7 +65,8 @@ public class ImageCropActivity extends AppCompatActivity
   Button btnDone;
   private Typeface fontSemiBoldCondensed;
   //View mMoveResizeText;
-
+  private final int READ_PERMISSION = 1;
+  private final int WRITE_PERMISSION = 2;
 
   private ContentResolver mContentResolver;
   private float minScale = 1f;
@@ -85,6 +93,7 @@ public class ImageCropActivity extends AppCompatActivity
   protected void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
+
     this.fontSemiBoldCondensed = Typeface.createFromAsset(getResources().getAssets(), "fonts/ProximaNova-SemiBoldCondensed.ttf");
 
     setContentView(R.layout.activity_image_crop);
@@ -108,7 +117,6 @@ public class ImageCropActivity extends AppCompatActivity
       }
     });
 
-    createTempFile();
     if (savedInstanceState == null || !savedInstanceState.getBoolean("restoreState"))
     {
       String action = getIntent().getStringExtra("ACTION");
@@ -118,11 +126,26 @@ public class ImageCropActivity extends AppCompatActivity
         {
           case GOTOConstants.IntentExtras.ACTION_CAMERA:
             getIntent().removeExtra("ACTION");
-            takePic();
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+              // Permission denied, ask for it
+              ActivityCompat.requestPermissions(this,
+                      new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                      WRITE_PERMISSION);
+            } else {
+              takePic();
+            }
+
             return;
           case GOTOConstants.IntentExtras.ACTION_GALLERY:
             getIntent().removeExtra("ACTION");
-            pickImage();
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+              // Permission denied, ask for it
+              ActivityCompat.requestPermissions(this,
+                      new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                      READ_PERMISSION);
+            } else {
+              pickImage();
+            }
             return;
         }
       }
@@ -137,6 +160,31 @@ public class ImageCropActivity extends AppCompatActivity
   protected void onStart()
   {
     super.onStart();
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, String permissions[], int grantResults[]) {
+    switch (requestCode) {
+      case READ_PERMISSION: {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          pickImage();
+        } else {
+          finish();
+        }
+
+        pickImage();
+        return;
+      }
+      case WRITE_PERMISSION: {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          takePic();
+        } else {
+          finish();
+        }
+
+        return;
+      }
+    }
   }
 
   private void init()
@@ -209,20 +257,23 @@ public class ImageCropActivity extends AppCompatActivity
 
   private void takePic()
   {
+    createTempFile();
     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
     try
     {
-      Uri mImageCaptureUri = null;
+      Uri mImageCaptureUri;
       String state = Environment.getExternalStorageState();
       if (Environment.MEDIA_MOUNTED.equals(state))
       {
-        mImageCaptureUri = Uri.fromFile(mFileTemp);
+        mImageCaptureUri = FileProvider.getUriForFile(ImageCropActivity.this,
+                this.getPackageName() + ".provider",
+                mFileTemp);
       }
       else
       {
-                /*
-             * The solution is taken from here: http://stackoverflow.com/questions/10042695/how-to-get-camera-result-as-a-uri-in-data-folder
-	        	 */
+        /*
+        * The solution is taken from here: http://stackoverflow.com/questions/10042695/how-to-get-camera-result-as-a-uri-in-data-folder
+        */
         mImageCaptureUri = InternalStorageContentProvider.CONTENT_URI;
       }
       takePictureIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
@@ -306,6 +357,9 @@ public class ImageCropActivity extends AppCompatActivity
         {
           InputStream inputStream = getContentResolver().openInputStream(result.getData()); // Got the bitmap .. Copy it to the temp file for cropping
           FileOutputStream fileOutputStream = new FileOutputStream(mFileTemp);
+          // FIXME
+          // 08-08 16:57:47.499 31697-31697/com.oz.eon.d E/ImageZoomCrop: /storage/emulated/0/temp_photo.jpg (Permission denied)
+          // java.io.FileNotFoundException: /storage/emulated/0/temp_photo.jpg (Permission denied)
           copyStream(inputStream, fileOutputStream);
           fileOutputStream.close();
           inputStream.close();
