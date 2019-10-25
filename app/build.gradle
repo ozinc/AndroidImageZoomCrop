@@ -3,8 +3,7 @@ archivesBaseName = 'client_android_imagezoomcrop'
 group = 'com.oz.imagezoomcrop'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
 
     defaultConfig {
         versionCode Integer.parseInt(project.APP_VERSION_CODE)
@@ -40,7 +39,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support:cardview-v7:27.1.1'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:cardview-v7:28.0.0'
     implementation 'com.joooonho:selectableroundedimageview:1.0.1'
 }
